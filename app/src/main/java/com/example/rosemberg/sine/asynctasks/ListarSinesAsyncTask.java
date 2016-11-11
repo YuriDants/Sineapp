@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListarSinesAsyncTask extends AsyncTask<String, Void, List<Sine>>{
+public class ListarSinesAsyncTask extends AsyncTask <String, Void, List<Sine>>{
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -23,7 +23,7 @@ public class ListarSinesAsyncTask extends AsyncTask<String, Void, List<Sine>>{
     @Override
     protected List<Sine> doInBackground(String... strings){
         String urlString = strings[0];
-        List<Sine> sines = new ArrayList<>();
+        List<Sine> sine = new ArrayList<>();
 
         try {
             URL url = new URL(urlString);
@@ -34,50 +34,51 @@ public class ListarSinesAsyncTask extends AsyncTask<String, Void, List<Sine>>{
             connection.connect();
 
             InputStream inputStream = connection.getInputStream();
-            JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+            JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 
-            sines= get(jsonReader);
+            sine = getSines(reader);
             inputStream.close();
 
         }   catch (IOException ex) {
             ex.printStackTrace();
             Log.e("Erro","Erro ao conectar a internet", ex);
         } finally {
-            return  sines;
+            return  sine;
         }
     }
 
 
 
-    public List<Sine> getSines(JsonReader jsonReader) throws IOException {
-        List<Sine> sineList = new ArrayList<Sine>();
-        jsonReader.beginArray();
 
-        while(jsonReader.hasNext()) {
-            sineList.add(getSine(jsonReader));
+    public List<Sine> getSines(JsonReader reader) throws IOException {
+        List<Sine> sineList = new ArrayList<>();
+        reader.beginArray();
+
+        while(reader.hasNext()) {
+            sineList.add(getSine(reader));
         }
-        jsonReader.endArray();
+        reader.endArray();
         return sineList;
     }
-    public  Sine getSine(JsonReader jsonReader) throws  IOException {
+    public  Sine getSine(JsonReader reader) throws  IOException {
         String codPosto = "",nome = "",entidadeConveniada = "", uf="";
-        jsonReader.beginObject();
+       reader.beginObject();
 
-        while (jsonReader.hasNext()){
-            String obj = jsonReader.nextName();
+        while (reader.hasNext()){
+            String obj = reader.nextName();
             if (obj.equals("nome")){
-                codPosto = jsonReader.nextString();
+                codPosto = reader.nextString();
             }else if (obj.equals("nome")){
-                nome = jsonReader.nextString();
+                nome = reader.nextString();
             }else if (obj.equals("entidadeConvencionada")){
-                entidadeConveniada = jsonReader.nextString();
+                entidadeConveniada = reader.nextString();
             }else if (obj.equals("uf")) {
-                uf = jsonReader.nextString();
+                uf = reader.nextString();
             }else {
-                jsonReader.skipValue();
+                reader.skipValue();
             }
         }
-        jsonReader.endObject();
+        reader.endObject();
         return new Sine(codPosto,nome,entidadeConveniada,uf);
     }
     @Override

@@ -1,7 +1,6 @@
 package com.example.rosemberg.sine.activities;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,17 +26,17 @@ public class ListarSines extends Activity {
         ListarSinesAsyncTask listarSinesAsyncTask = new ListarSinesAsyncTask();
 
         try {
-            final ArrayAdapter<Sine> adapter = new ArrayAdapter<Sine>(this, android.R.layout.simple_list_item_1, listarSinesAsyncTask.execute("http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/emprego/").get());
+            final ArrayAdapter<Sine> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listarSinesAsyncTask.execute("http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/emprego/").get());
             lista1.setAdapter(adapter);
             lista1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String codPost = (String) adapter.getItem(position).getCodPosto();
+                    String codPost = adapter.getItem(position).getCodPosto();
                     ListView listView = (ListView) findViewById(R.id.lista1);
                     ListarSinesDetalhados listarSinesDetalhados = new ListarSinesDetalhados();
                     try {
-                        ArrayAdapter<SineDetalhado> adapter1 = new ArrayAdapter<SineDetalhado>(view.getContext(), android.R.layout.simple_list_item_1, listarSinesDetalhados.execute("http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/emprego/cod/" + codPost).get());
-                        listarSinesDetalhados.setAdapter(adapter);
+                        ArrayAdapter<SineDetalhado> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_1, listarSinesDetalhados.execute("http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/emprego/cod/" + codPost).get());
+                        listView.setAdapter(adapter);
                     } catch (InterruptedException | ExecutionException e) {
 
                         e.printStackTrace();

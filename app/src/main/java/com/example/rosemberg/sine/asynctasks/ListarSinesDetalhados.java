@@ -3,9 +3,7 @@ package com.example.rosemberg.sine.asynctasks;
 import android.os.AsyncTask;
 import android.util.JsonReader;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
-import com.example.rosemberg.sine.classes.Sine;
 import com.example.rosemberg.sine.classes.SineDetalhado;
 
 import java.io.IOException;
@@ -20,7 +18,7 @@ public class ListarSinesDetalhados extends AsyncTask< String, Void, List<SineDet
 
     protected List<SineDetalhado> doInBackground(String... strings) {
         String urlString = strings[0];
-        List<SineDetalhado> sineDetalhados = new ArrayList<>();
+        List<SineDetalhado> sine = new ArrayList<>();
 
         try{
             URL url = new URL(urlString);
@@ -31,60 +29,60 @@ public class ListarSinesDetalhados extends AsyncTask< String, Void, List<SineDet
             connection.connect();
 
             InputStream inputStream = connection.getInputStream();
-            JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
+            JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 
-            sineDetalhados = getSines(jsonReader);
+            sine = getSines(reader);
 
             inputStream.close();
         } catch (IOException ex) {
             ex.printStackTrace();
             Log.e("Erro","Ero ao conectar a internet", ex);
         }
-        return sineDetalhados;
+        return sine;
     }
-    public  List<SineDetalhado> getSines(JsonReader jsonReader) throws IOException{
-        List<SineDetalhado> sineDetalhadoList = new ArrayList<SineDetalhado>();
-        jsonReader.beginArray();
+    public  List<SineDetalhado> getSines(JsonReader reader) throws IOException{
+        List<SineDetalhado> sines = new ArrayList<>();
+        reader.beginArray();
 
-        while (jsonReader.hasNext()){
-            sineDetalhadoList.add(getSine(jsonReader));
+        while (reader.hasNext()){
+            sines.add(getSine(reader));
         }
-        jsonReader.endArray();
-        return sineDetalhadoList;
+        reader.endArray();
+        return sines;
     }
-    public SineDetalhado getSine(JsonReader jsonReader) throws IOException{
+    public SineDetalhado getSine(JsonReader reader) throws IOException{
         String codPosto="",nome = "",entidadeConveniada = "",endereco="",bairro="",cep="",telefone="",municipio="",uf="",lat="",lon="";
-        jsonReader.beginObject();
+        reader.beginObject();
 
-        while (jsonReader.hasNext()) {
-            String obj = jsonReader.nextName();
+        while (reader.hasNext()) {
+            String obj = reader.nextName();
             if (obj.equals("codPosto")) {
-                codPosto = jsonReader.nextString();
+                codPosto = reader.nextString();
             }else if (obj.equals("nome")) {
-                nome = jsonReader.nextString();
+                nome = reader.nextString();
             }else if (obj.equals("entidadeConveniada")) {
-                entidadeConveniada = jsonReader.nextString();
+                entidadeConveniada = reader.nextString();
             }else if (obj.equals("endereco")){
-                endereco = jsonReader.nextString();
+                endereco = reader.nextString();
             }else if (obj.equals("bairro")) {
-                bairro = jsonReader.nextString();
+                bairro = reader.nextString();
             }else if (obj.equals("cep")){
-                cep = jsonReader.nextString();
+                cep = reader.nextString();
             }else if (obj.equals("telefone")){
-                telefone = jsonReader.nextString();
+                telefone = reader.nextString();
             }else if (obj.equals("municipio")){
-                municipio = jsonReader.nextString();
+                municipio = reader.nextString();
             }else if (obj.equals("uf")){
-                uf = jsonReader.nextString();
+                uf = reader.nextString();
             }else if (obj.equals("lat")){
-                lat = jsonReader.nextString();
+                lat = reader.nextString();
             }else if (obj.equals("long")){
-                lon = jsonReader.nextString();
+                lon = reader.nextString();
             }else {
-                jsonReader.skipValue();
+                reader.skipValue();
             }
         }
-        jsonReader.endObject();
+        reader.endObject();
         return  new SineDetalhado(codPosto, nome, entidadeConveniada, endereco, bairro, cep, telefone, municipio, uf, lat, lon);
     }
     protected  void onPostExecute(List<SineDetalhado> result){
