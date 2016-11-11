@@ -5,5 +5,5 @@ Sines de CAmpina Grande:http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/empre
 
 
 
- Ps: Esse Repostirorio foi originado de um Fork do repositorio de RosembergLima, ]
+ Ps: Esse Repostirorio foi originado de um Fork do repositorio de RosembergLima, https://github.com/RosembergDeLima/SINE
 como não tinha permissão de sincronizar meus comits foi necessario a criação de um novo repositorio, por isso não tem os comits dos outros participantes do grupo.
